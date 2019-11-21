@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Models;
 using API.Models.Context;
+using API.Repositories;
+using API.ReturnModels;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +31,7 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddJsonOptions(options =>
                 {
@@ -41,6 +46,7 @@ namespace API
             //Pass DB provider and Connection String
             services.AddDbContext<ApplicationDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
+            services.AddScoped<IRestaurantRepository, RestaurantRepository>();
             //Configure CORS in ASP.NET CORE WEB API
             services.AddCors();
         }
@@ -52,6 +58,8 @@ namespace API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+
 
             //Configure CORS in ASP.NET CORE WEB API
             app.UseCors(option => option.WithOrigins("http://localhost:4200")
