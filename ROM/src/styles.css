@@ -2,4 +2,15 @@
 
 .jumbotron {
     background-color: #fff;
+    padding-top: 0;
 }
+
+.input-group-text {
+    width: 40px;
+}
+
+table.table-hover tbody tr:hover {
+    cursor: pointer;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
