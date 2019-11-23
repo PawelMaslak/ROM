@@ -15,6 +15,16 @@ export class OrderItemsComponent implements OnInit {
     public dialogRef: MatDialogRef<OrderItemsComponent>) { }
 
   ngOnInit() {
+    this.formData = {
+      OrderDetailId: null,
+      OrderId: this.data.OrderId,
+      ItemId: 0,
+      ItemName: '',
+      Price: 0,
+      Quantity: 0,
+      Total: 0
+    }
   }
+
 
 }

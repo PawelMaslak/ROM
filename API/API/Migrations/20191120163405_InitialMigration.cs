@@ -140,6 +140,36 @@ namespace API.Migrations
                 values: new object[] { 5, "Speciale", 8.50 }
             );
 
+            migrationBuilder.InsertData(
+                table: "Items",
+                columns: new[] { "ItemId", "Name", "Price" },
+                values: new object[] { 6, "Speciale", 8.50 }
+            );
+
+            migrationBuilder.InsertData(
+                table: "Items",
+                columns: new[] { "ItemId", "Name", "Price" },
+                values: new object[] { 7, "Marco Polo", 6.50 }
+            );
+
+            migrationBuilder.InsertData(
+                table: "Items",
+                columns: new[] { "ItemId", "Name", "Price" },
+                values: new object[] { 8, "Vesuvio", 9.50 }
+            );
+
+            migrationBuilder.InsertData(
+                table: "Items",
+                columns: new[] { "ItemId", "Name", "Price" },
+                values: new object[] { 9, "Bambino", 4.50 }
+            );
+
+            migrationBuilder.InsertData(
+                table: "Items",
+                columns: new[] { "ItemId", "Name", "Price" },
+                values: new object[] { 10, "Figa", 6.50 }
+            );
+
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_ItemId",
                 table: "OrderDetails",
