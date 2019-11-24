@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms'
 import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MatSliderModule } from '@angular/material/slider';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,7 +26,8 @@ import { OrderService } from './shared/order.service';
     FormsModule,
     MatDialogModule,
     BrowserAnimationsModule,
-    MatSliderModule
+    MatSliderModule,
+    HttpClientModule
   ],
   entryComponents: [OrderItemsComponent],
   providers: [OrderService],

@@ -59,8 +59,6 @@ namespace API
                 app.UseDeveloperExceptionPage();
             }
 
-
-
             //Configure CORS in ASP.NET CORE WEB API
             app.UseCors(option => option.WithOrigins("http://localhost:4200")
                 .AllowAnyMethod()

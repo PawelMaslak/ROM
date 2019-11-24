@@ -40,8 +40,7 @@
                     <select name="PaymentMethod" #PaymentMethod="ngModel" [(ngModel)]="service.formData.PaymentMethod"
                         class="form-control">
                         <option value="">-Select</option>
-                        <option value="Cash">Cash</option>
-                        <option value="Card">Card</option>
+                        <option *ngFor="let paymentMethod of paymentMethodsList" value="{{paymentMethod.PaymentMethodId}}">{{paymentMethod.Name}}</option>
                     </select>
                 </div>
             </div>
