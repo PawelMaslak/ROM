@@ -1,4 +1,4 @@
-<form #form="ngForm" autocomplete="off" *ngIf="service.formData">
+<form #form="ngForm" autocomplete="off" *ngIf="service.formData" (submit)="onSubmit(form)">
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
@@ -22,8 +22,10 @@
                         </div>
                     </div>
                     <select name="CustomerId" #CustomerId="ngModel" [(ngModel)]="service.formData.CustomerId"
-                        class="form-control">
+                        class="form-control" [class.is-invalid]="!isValid && formData.CustomerId==0">
                         <option value="0">-Select</option>
+                        <option *ngFor="let customer of customersList" value="{{customer.CustomerId}}">
+                                {{customer.Name}}</option>
                     </select>
                 </div>
             </div>
@@ -40,7 +42,8 @@
                     <select name="PaymentMethod" #PaymentMethod="ngModel" [(ngModel)]="service.formData.PaymentMethod"
                         class="form-control">
                         <option value="">-Select</option>
-                        <option *ngFor="let paymentMethod of paymentMethodsList" value="{{paymentMethod.PaymentMethodId}}">{{paymentMethod.Name}}</option>
+                        <option *ngFor="let paymentMethod of paymentMethodsList" value="{{paymentMethod.Name}}">
+                            {{paymentMethod.Name}}</option>
                     </select>
                 </div>
             </div>
@@ -84,9 +87,12 @@
                 <td>{{item.Quantity}}</td>
                 <td>{{item.Total}}</td>
                 <td>
-                    <a href="" class="btn btn-sm btn-info text-white"
+                    <button class="btn btn-sm btn-info text-white"
                         (click)="addOrEditOrderItem(i,service.formData.OrderNo)">
-                        <i class="fas fa-edit"></i></a>
+                        <i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm btn-danger text-white ml-1"
+                        (click)="deleteItem(item.OrderDetailId, i)">
+                        <i class="fas fa-trash-alt"></i></button>
                 </td>
             </tr>
         </tbody>

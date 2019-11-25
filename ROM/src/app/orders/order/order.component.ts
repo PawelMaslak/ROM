@@ -5,6 +5,11 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { OrderItemsComponent } from '../order-items/order-items.component';
 import { Paymentmethod } from 'src/app/shared/paymentmethod.model';
 import { PaymentmethodService } from 'src/app/shared/paymentmethod.service';
+import { CustomerService } from 'src/app/shared/customer.service';
+import { Customer } from 'src/app/shared/customer.model';
+import { chown } from 'fs';
+import { Order } from 'src/app/shared/order.model';
+import { createWiresService } from 'selenium-webdriver/firefox';
 
 @Component({
   selector: 'app-order',
@@ -14,17 +19,24 @@ import { PaymentmethodService } from 'src/app/shared/paymentmethod.service';
 export class OrderComponent implements OnInit {
 
   paymentMethodsList: Paymentmethod[];
+  customersList: Customer[];
+  isValid: boolean = true;
+  formData: Order;
 
   constructor(
     private service: OrderService,
     private dialog: MatDialog,
-    private paymentService: PaymentmethodService) { }
+    private paymentService: PaymentmethodService,
+    private customerService: CustomerService) { }
 
 
   ngOnInit() {
-    this.resetForm()
+    this.resetForm();
     this.paymentService.getPaymentMethods()
-      .then(res => this.paymentMethodsList = res as Paymentmethod[])
+      .then(res => this.paymentMethodsList = res as Paymentmethod[]);
+    this.customerService.getCustomers()
+      .then(res =>
+        this.customersList = res as Customer[]);
   }
 
   resetForm(form?: NgForm) {
@@ -41,6 +53,18 @@ export class OrderComponent implements OnInit {
     this.service.orderItems = [];
   }
 
+  validateForm(formData: Order) {
+    this.isValid = true;
+
+    if (this.formData.CustomerId == 0) {
+      this.isValid = false;
+    }
+    else if(this.formData.PaymentMethod == '') {
+      this.isValid = false;
+    }
+    return this.isValid;
+  }
+
   addOrEditOrderItem(OrderItemIndex, OrderId) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
@@ -48,7 +72,30 @@ export class OrderComponent implements OnInit {
     dialogConfig.width = "50%";
     //Pasing the OrderItemIndex and OrderId
     dialogConfig.data = { OrderItemIndex, OrderId };
-    this.dialog.open(OrderItemsComponent, dialogConfig)
+    this.dialog.open(OrderItemsComponent, dialogConfig).afterClosed().subscribe(res => {
+      this.updateGrandTotal();
+    })
+  }
+
+  onSubmit(form: NgForm) {
+    if (this.validateForm(form.value)) {
+      console.log("Form is valid!");
+      alert("Tadam!");
+    }
+    else{
+      console.log("Form is not valid! Check the form!");
+    }
+  }
+
+  deleteItem(orderItemId: number, index: number) {
+    this.service.orderItems.splice(index, 1);
+    this.updateGrandTotal();
+  }
+
+  updateGrandTotal() {
+    this.service.formData.Total = parseFloat((this.service.orderItems.reduce((prev, curr) => {
+      return prev + curr.Total;
+    }, 0)).toFixed(2));
   }
 
   openDialog() {
