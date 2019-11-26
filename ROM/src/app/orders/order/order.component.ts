@@ -7,9 +7,7 @@ import { Paymentmethod } from 'src/app/shared/paymentmethod.model';
 import { PaymentmethodService } from 'src/app/shared/paymentmethod.service';
 import { CustomerService } from 'src/app/shared/customer.service';
 import { Customer } from 'src/app/shared/customer.model';
-import { chown } from 'fs';
 import { Order } from 'src/app/shared/order.model';
-import { createWiresService } from 'selenium-webdriver/firefox';
 
 @Component({
   selector: 'app-order',
@@ -17,11 +15,9 @@ import { createWiresService } from 'selenium-webdriver/firefox';
   styles: []
 })
 export class OrderComponent implements OnInit {
-
   paymentMethodsList: Paymentmethod[];
   customersList: Customer[];
   isValid: boolean = true;
-  formData: Order;
 
   constructor(
     private service: OrderService,
@@ -43,7 +39,7 @@ export class OrderComponent implements OnInit {
     if (form != null)
       form.resetForm();
     this.service.formData = {
-      OrderId: null,
+      OrderId: 0,
       OrderNo: Math.floor(100000 + Math.random() * 900000).toString(),
       CustomerId: 0,
       PaymentMethod: '',
@@ -53,15 +49,18 @@ export class OrderComponent implements OnInit {
     this.service.orderItems = [];
   }
 
-  validateForm(formData: Order) {
+  validateForm() {
     this.isValid = true;
+    if (this.service.formData.CustomerId == 0) {
+      this.isValid = false;
+    }
+    else if (this.service.orderItems.length == 0) {
+      this.isValid = false;
+    }
+    else if (this.service.formData.PaymentMethod == '') {
+      this.isValid = false;
+    }
 
-    if (this.formData.CustomerId == 0) {
-      this.isValid = false;
-    }
-    else if(this.formData.PaymentMethod == '') {
-      this.isValid = false;
-    }
     return this.isValid;
   }
 
@@ -78,13 +77,17 @@ export class OrderComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
-    if (this.validateForm(form.value)) {
-      console.log("Form is valid!");
-      alert("Tadam!");
+    if (this.validateForm()) {
+      console.log("Submitting the form...");
+      this.postOrder(form);
+      console.log("Form has been submitted successfully!")
     }
-    else{
-      console.log("Form is not valid! Check the form!");
-    }
+  }
+
+  postOrder(form: NgForm) {
+    this.service.saveOrUpdateOrder().subscribe(res => {
+      this.resetForm();
+    })
   }
 
   deleteItem(orderItemId: number, index: number) {

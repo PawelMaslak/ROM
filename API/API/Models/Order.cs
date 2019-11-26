@@ -23,6 +23,8 @@ namespace API.Models
         //Foreign Key Sections
 
         [ForeignKey("CustomerId")]
-        public Customer Customer { get; set; }
+        public virtual Customer Customer { get; set; }
+
+        public virtual ICollection<OrderDetail> OrderItems { get; set; }
     }
 }

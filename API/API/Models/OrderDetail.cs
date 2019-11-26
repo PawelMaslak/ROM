@@ -17,9 +17,9 @@ namespace API.Models
 
         //Foreign Key
         [ForeignKey("OrderId")]
-        public Order Order { get; set; }
+        public virtual Order Order { get; set; }
         [ForeignKey("ItemId")]
-        public Item Item { get; set; }
+        public virtual Item Item { get; set; }
 
     }
 }

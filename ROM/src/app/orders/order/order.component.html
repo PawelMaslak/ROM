@@ -22,7 +22,7 @@
                         </div>
                     </div>
                     <select name="CustomerId" #CustomerId="ngModel" [(ngModel)]="service.formData.CustomerId"
-                        class="form-control" [class.is-invalid]="!isValid && formData.CustomerId==0">
+                        class="form-control" [class.is-invalid]="!isValid && service.formData.CustomerId==0">
                         <option value="0">-Select</option>
                         <option *ngFor="let customer of customersList" value="{{customer.CustomerId}}">
                                 {{customer.Name}}</option>
@@ -40,7 +40,7 @@
                         </div>
                     </div>
                     <select name="PaymentMethod" #PaymentMethod="ngModel" [(ngModel)]="service.formData.PaymentMethod"
-                        class="form-control">
+                        class="form-control" [class.is-invalid]="!isValid && service.formData.PaymentMethod==''">
                         <option value="">-Select</option>
                         <option *ngFor="let paymentMethod of paymentMethodsList" value="{{paymentMethod.Name}}">
                             {{paymentMethod.Name}}</option>
@@ -76,7 +76,7 @@
             </th>
         </thead>
         <tbody>
-            <tr *ngIf="service.orderItems.length == 0">
+            <tr *ngIf="service.orderItems.length == 0" [class.text-danger]="!isValid && service.orderItems.length == 0">
                 <td class="font-italic text-center" colspan="5">
                     No items selected for this order
                 </td>

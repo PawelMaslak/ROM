@@ -69,7 +69,7 @@ export class OrderItemsComponent implements OnInit {
 
   onSubmit(form: NgForm) {
     if (this.validateForm(form.value)) {
-      if(this.data.OrderItemIndex == null) {//POST
+      if(this.data.OrderItemIndex == null) {//PUSH
         this.orderService.orderItems.push(form.value);
       }
       else{ //EDIT
