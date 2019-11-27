@@ -7,7 +7,8 @@ import { Paymentmethod } from 'src/app/shared/paymentmethod.model';
 import { PaymentmethodService } from 'src/app/shared/paymentmethod.service';
 import { CustomerService } from 'src/app/shared/customer.service';
 import { Customer } from 'src/app/shared/customer.model';
-import { Order } from 'src/app/shared/order.model';
+import { ToastrService } from 'ngx-toastr';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-order',
@@ -23,11 +24,23 @@ export class OrderComponent implements OnInit {
     private service: OrderService,
     private dialog: MatDialog,
     private paymentService: PaymentmethodService,
-    private customerService: CustomerService) { }
+    private customerService: CustomerService,
+    private toastr: ToastrService,
+    private router: Router,
+    private currentRoute: ActivatedRoute) { }
 
 
   ngOnInit() {
-    this.resetForm();
+    let orderId = this.currentRoute.snapshot.paramMap.get('id'); //retrieves ID value from route.
+    if (orderId == null)
+      this.resetForm();
+    else {
+      this.service.getOrderById(parseInt(orderId)).then(res => {
+        this.service.formData = res.Order;
+        this.service.orderItems = res.OrderItems;
+      });
+    }
+
     this.paymentService.getPaymentMethods()
       .then(res => this.paymentMethodsList = res as Paymentmethod[]);
     this.customerService.getCustomers()
@@ -43,7 +56,8 @@ export class OrderComponent implements OnInit {
       OrderNo: Math.floor(100000 + Math.random() * 900000).toString(),
       CustomerId: 0,
       PaymentMethod: '',
-      Total: 0
+      Total: 0,
+      DeletedOrderItemsIds: []
     };
 
     this.service.orderItems = [];
@@ -64,6 +78,22 @@ export class OrderComponent implements OnInit {
     return this.isValid;
   }
 
+  getValidationErrors() {
+    var errorsArray: string[];
+
+    if (this.service.formData.CustomerId == 0) {
+      errorsArray.push("Please select customer");
+    }
+    else if (this.service.orderItems.length == 0) {
+      errorsArray.push("Please select items to order");
+    }
+    else if (this.service.formData.PaymentMethod == '') {
+      errorsArray.push("Please select payment method");
+    }
+
+    return errorsArray;
+  }
+
   addOrEditOrderItem(OrderItemIndex, OrderId) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.autoFocus = true;
@@ -73,26 +103,42 @@ export class OrderComponent implements OnInit {
     dialogConfig.data = { OrderItemIndex, OrderId };
     this.dialog.open(OrderItemsComponent, dialogConfig).afterClosed().subscribe(res => {
       this.updateGrandTotal();
-    })
+    });
   }
 
   onSubmit(form: NgForm) {
+    debugger
     if (this.validateForm()) {
       console.log("Submitting the form...");
-      this.postOrder(form);
-      console.log("Form has been submitted successfully!")
+      try {
+        this.postOrder(form);
+        console.log("Form has been submitted successfully!")
+      }
+      catch (e) {
+        throw new Error('An error occured: ' + e);
+      }
+    }
+    else {
+      this.toastr.error("Form input data is invalid. Please check the form.", "Error!");
     }
   }
 
   postOrder(form: NgForm) {
     this.service.saveOrUpdateOrder().subscribe(res => {
       this.resetForm();
+      this.toastr.success("Order has been added! Order no: " + this.service.formData.OrderNo, "Success!");
+      this.router.navigate(['/orders']);
     })
   }
 
   deleteItem(orderItemId: number, index: number) {
+    debugger
+    if (orderItemId != null) {
+      this.service.formData.DeletedOrderItemsIds.push(orderItemId);
+    }
     this.service.orderItems.splice(index, 1);
     this.updateGrandTotal();
+    this.toastr.warning("Item has been deleted from the list!", "Item removed")
   }
 
   updateGrandTotal() {

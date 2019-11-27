@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Models;
 using API.Models.Context;
+using Remotion.Linq.Clauses;
 
 namespace API.Controllers
 {
@@ -23,23 +24,71 @@ namespace API.Controllers
 
         // GET: api/Orders
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        public async Task<ActionResult<IEnumerable<object>>> GetOrders()
         {
-            return await _context.Orders.ToListAsync();
+            var result = (from a in _context.Orders
+                          join b in _context.Customers on a.CustomerId equals b.CustomerId
+                          select new
+                          {
+                              a.OrderId,
+                              a.OrderNo,
+                              Customer = b.Name,
+                              a.PaymentMethod,
+                              a.Total
+                          }).ToListAsync();
+
+            //Query for returning OrderedItems List as well!
+            //var properResult = _context.Orders
+            //    .Join(_context.Customers, p => p.CustomerId, pc => pc.CustomerId, (p, pc) => new {p, pc})
+            //    .Join(_context.OrderDetails, ppc => ppc.p.OrderId, c => c.OrderId, (ppc, c) => new {ppc, c})
+            //    .Select(m => new
+            //    {
+            //        m.ppc.p.OrderId,
+            //        Name = m.ppc.pc.Name,
+            //        m.ppc.p.OrderItems
+            //    }).ToListAsync();
+
+
+            return await result;
         }
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(int id)
         {
-            var order = await _context.Orders.FindAsync(id);
+            var order = await (from a in _context.Orders
+                               where a.OrderId == id
 
-            if (order == null)
+                               select new
+                               {
+                                   a.OrderId,
+                                   a.OrderNo,
+                                   a.CustomerId,
+                                   a.PaymentMethod,
+                                   a.Total,
+                                   a.DeletedOrderItemsIds
+                               }).FirstAsync();
+
+            var items = await (from a in _context.OrderDetails
+                               join b in _context.Items on a.ItemId equals b.ItemId
+                               where a.OrderId == id
+
+                               select new
+                               {
+                                   a.OrderDetailId,
+                                   a.OrderId,
+                                   a.ItemId,
+                                   a.Quantity,
+                                   ItemName = b.Name,
+                                   b.Price,
+                                   Total = a.Quantity * b.Price
+                               }).ToListAsync();
+
+            return Ok(new
             {
-                return NotFound();
-            }
-
-            return order;
+                Order = order,
+                OrderItems = items
+            });
         }
 
         // PUT: api/Orders/5
@@ -78,16 +127,45 @@ namespace API.Controllers
         {
             try
             {
-                //Order Table Insert:
-                _context.Orders.Add(order);
-                //Order Detail Table Insert:
-                if (order.OrderItems != null)
+                //POST
+                if (order.OrderId == 0)
                 {
+                    //Order Table Insert:
+                    _context.Orders.Add(order);
+                    //Order Detail Table Insert:
+
                     foreach (var orderItem in order.OrderItems)
                     {
                         _context.OrderDetails.Add(orderItem);
                     }
                 }
+                //PUT
+                else
+                {
+                    _context.Entry(order).State = EntityState.Modified;
+
+                    foreach (var orderItem in order.OrderItems)
+                    {
+                        if (orderItem.OrderDetailId == 0)
+                        {
+                            _context.OrderDetails.Add(orderItem);
+                        }
+                        else
+                        {
+                            _context.Entry(orderItem).State = EntityState.Modified;
+                        }
+
+                    }
+                }
+
+                //DELETE OrderItems
+                foreach (var id in order.DeletedOrderItemsIds)
+                {
+                    OrderDetail item = await _context.OrderDetails.FindAsync(Convert.ToInt64(id));
+
+                    _context.OrderDetails.Remove(item);
+                }
+
 
                 await _context.SaveChangesAsync();
 

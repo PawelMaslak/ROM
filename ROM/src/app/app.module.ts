@@ -5,8 +5,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MatSliderModule } from '@angular/material/slider';
 import { HttpClientModule } from '@angular/common/http';
-
+import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule } from './app-routing.module';
+
 import { AppComponent } from './app.component';
 import { OrdersComponent } from './orders/orders.component';
 import { OrderComponent } from './orders/order/order.component';
@@ -27,7 +28,8 @@ import { OrderService } from './shared/order.service';
     MatDialogModule,
     BrowserAnimationsModule,
     MatSliderModule,
-    HttpClientModule
+    HttpClientModule,
+    ToastrModule.forRoot()
   ],
   entryComponents: [OrderItemsComponent],
   providers: [OrderService],

@@ -4,4 +4,5 @@ export class Order {
     CustomerId: number;
     PaymentMethod: string;
     Total: number;
+    DeletedOrderItemsIds: number[];
 }

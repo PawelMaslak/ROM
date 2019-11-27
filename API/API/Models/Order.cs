@@ -20,6 +20,9 @@ namespace API.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal Total { get; set; }
 
+        [NotMapped]
+        public int[] DeletedOrderItemsIds { get; set; }
+
         //Foreign Key Sections
 
         [ForeignKey("CustomerId")]

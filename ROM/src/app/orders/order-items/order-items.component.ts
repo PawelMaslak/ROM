@@ -37,7 +37,7 @@ export class OrderItemsComponent implements OnInit {
 
     if (this.data.OrderItemIndex == null) {
       this.formData = {
-        OrderDetailId: null,
+        OrderDetailId: 0,
         OrderId: this.data.OrderId,
         ItemId: 0,
         ItemName: '',
@@ -71,9 +71,11 @@ export class OrderItemsComponent implements OnInit {
     if (this.validateForm(form.value)) {
       if(this.data.OrderItemIndex == null) {//PUSH
         this.orderService.orderItems.push(form.value);
+        console.log("Order item added: " + this.formData.ItemName);
       }
       else{ //EDIT
         this.orderService.orderItems[this.data.OrderItemIndex] = form.value;
+        console.log("Order item edited: " + this.formData.ItemName);
       }
       this.dialogRef.close();
     }

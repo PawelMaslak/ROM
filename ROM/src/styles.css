@@ -14,3 +14,11 @@ table.table-hover tbody tr:hover {
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+a:link, a:hover {
+    cursor: pointer;
+}
+
+.mainLogo {
+    cursor: pointer;
+}
