@@ -15,7 +15,11 @@
             <th (click)="openForEdit(item.OrderId)">{{item.Customer}}</th>
             <th (click)="openForEdit(item.OrderId)">{{item.PaymentMethod}}</th>
             <th (click)="openForEdit(item.OrderId)">{{item.Total}}</th>
-            <th></th>
+            <th>
+                <a class="btn btn-sm btn-danger text-white ml-1"
+                (click)="deleteOrder(item.OrderId, item.OrderNo)">
+                <i class="fas fa-trash-alt"></i></a>
+            </th>
         </tr>
     </tbody>
 </table>

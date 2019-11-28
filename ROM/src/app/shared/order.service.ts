@@ -31,6 +31,10 @@ export class OrderService {
     return this.http.get(environment.apiURL + '/orders/' + id).toPromise();
   }
 
+  deleteOrder(id: number) {
+    return this.http.delete(environment.apiURL + '/orders/'+ id).toPromise();
+  }
+
 
 }
 

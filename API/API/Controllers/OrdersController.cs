@@ -184,16 +184,28 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Order>> DeleteOrder(int id)
         {
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _context.Orders.Include(z => z.OrderItems)
+                .SingleOrDefaultAsync(x => x.OrderId == id);
+
             if (order == null)
             {
                 return NotFound();
             }
 
+            if (order.OrderItems != null)
+            {
+                foreach (var orderItem in order.OrderItems.ToList())
+                {
+                    OrderDetail item = await _context.OrderDetails.FindAsync(orderItem.OrderDetailId);
+
+                    _context.OrderDetails.Remove(item);
+                }
+            }
+
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
 
-            return order;
+            return Ok(order);
         }
 
         private bool OrderExists(int id)

@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { OrderService } from '../shared/order.service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-orders',
@@ -12,9 +13,14 @@ export class OrdersComponent implements OnInit {
 
   constructor(
     private service: OrderService,
-    private router: Router) { }
+    private router: Router,
+    private toastr: ToastrService) { }
 
   ngOnInit() {
+    this.refreshList();
+  }
+
+  refreshList() {
     this.service.getOrdersList().then(res => this.orderList = res);
   }
 
@@ -27,5 +33,16 @@ export class OrdersComponent implements OnInit {
 
   redirectToMain() {
     this.router.navigate(['/order']);
+  }
+
+  deleteOrder(orderId: number, orderNo: string) {
+    console.log("Deleting the Order with Id: " + orderId);
+    this.service.deleteOrder(orderId).then(res => {
+      this.refreshList();
+      this.toastr.warning(message, "Order deleted!");
+    });
+
+    var message: string = "Order no " + orderNo + " has been deleted successfully!";
+
   }
 }
