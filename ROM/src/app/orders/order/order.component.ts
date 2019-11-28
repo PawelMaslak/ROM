@@ -107,7 +107,6 @@ export class OrderComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
-    debugger
     if (this.validateForm()) {
       console.log("Submitting the form...");
       try {
@@ -131,10 +130,11 @@ export class OrderComponent implements OnInit {
     })
   }
 
-  deleteItem(orderItemId: number, index: number) {
-    debugger
-    if (orderItemId != null) {
-      this.service.formData.DeletedOrderItemsIds.push(orderItemId);
+  deleteItem(orderDetailId: number, index: number) {
+    this.service.formData.DeletedOrderItemsIds = [];
+
+    if (orderDetailId != 0) {
+      this.service.formData.DeletedOrderItemsIds.push(orderDetailId);
     }
     this.service.orderItems.splice(index, 1);
     this.updateGrandTotal();

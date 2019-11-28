@@ -158,12 +158,15 @@ namespace API.Controllers
                     }
                 }
 
-                //DELETE OrderItems
-                foreach (var id in order.DeletedOrderItemsIds)
+                if (order.DeletedOrderItemsIds != null)
                 {
-                    OrderDetail item = await _context.OrderDetails.FindAsync(Convert.ToInt64(id));
+                    //DELETE OrderItems
+                    foreach (var id in order.DeletedOrderItemsIds)
+                    {
+                        OrderDetail item = await _context.OrderDetails.FindAsync(id);
 
-                    _context.OrderDetails.Remove(item);
+                        _context.OrderDetails.Remove(item);
+                    }
                 }
 
 
