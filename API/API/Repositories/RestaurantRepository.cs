@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using API.Models;
 using API.Models.Context;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
@@ -69,6 +70,30 @@ namespace API.Repositories
             query = query.Where(q => q.CustomerId == id);
 
             return await query.FirstOrDefaultAsync();
+        }
+
+
+        #endregion
+
+        #region OrdersQueries
+
+        public async Task<Order[]> GetOrdersAsync()
+        {
+            IQueryable<Order> query = _context.Orders;
+
+            return await query.ToArrayAsync();
+        }
+
+
+        #endregion
+
+        #region OrderDetails
+
+        public async Task<OrderDetail[]> GetOrderDetailsAsync()
+        {
+            IQueryable<OrderDetail> query = _context.OrderDetails;
+
+            return await query.ToArrayAsync();
         }
 
         #endregion

@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Models;
 using API.Models.Context;
+using API.Repositories;
+using AutoMapper;
+using Microsoft.AspNetCore.Routing;
 using Remotion.Linq.Clauses;
 
 namespace API.Controllers
@@ -21,6 +24,7 @@ namespace API.Controllers
         {
             _context = context;
         }
+
 
         // GET: api/Orders
         [HttpGet]
@@ -89,36 +93,6 @@ namespace API.Controllers
                 Order = order,
                 OrderItems = items
             });
-        }
-
-        // PUT: api/Orders/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, Order order)
-        {
-            if (id != order.OrderId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(order).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OrderExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
         // POST: api/Orders

@@ -24,5 +24,17 @@ namespace API.Repositories
         Task<Customer> GetCustomerByIdSprocAsync(int id);
 
         #endregion
+
+        #region Orders
+
+        Task<Order[]> GetOrdersAsync();
+
+        #endregion
+
+        #region OrderDetails
+
+        Task<OrderDetail[]> GetOrderDetailsAsync();
+
+        #endregion
     }
 }

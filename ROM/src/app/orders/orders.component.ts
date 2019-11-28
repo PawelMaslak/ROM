@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { OrderService } from '../shared/order.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Order } from '../shared/order.model';
 
 @Component({
   selector: 'app-orders',
@@ -14,7 +15,9 @@ export class OrdersComponent implements OnInit {
   constructor(
     private service: OrderService,
     private router: Router,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService) {
+
+     }
 
   ngOnInit() {
     this.refreshList();
