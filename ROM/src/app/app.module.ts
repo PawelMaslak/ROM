@@ -13,13 +13,17 @@ import { OrdersComponent } from './orders/orders.component';
 import { OrderComponent } from './orders/order/order.component';
 import { OrderItemsComponent } from './orders/order-items/order-items.component';
 import { OrderService } from './shared/order.service';
+import { ItemsComponent } from './items/items.component';
+import { ItemComponent } from './items/item/item.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     OrdersComponent,
     OrderComponent,
-    OrderItemsComponent
+    OrderItemsComponent,
+    ItemsComponent,
+    ItemComponent
   ],
   imports: [
     BrowserModule,

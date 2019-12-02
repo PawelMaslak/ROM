@@ -2,7 +2,7 @@
     <div class="input-group-prepend">
       <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
     </div>
-    <input type="text" class="form-control" placeholder="Search by order no" aria-label="Username" aria-describedby="basic-addon1">
+    <input class="form-control" [(ngModel)]="listFilter" placeholder="Search by order no" aria-label="Username" aria-describedby="basic-addon1">
   </div>
 <table class="table table-hover">
     <thead class="thead-light">
@@ -16,7 +16,7 @@
         </th>
     </thead>
     <tbody>
-        <tr *ngFor="let item of orderList">
+        <tr *ngFor="let item of filteredOrders">
             <th (click)="openForEdit(item.OrderId)">{{item.OrderNo}}</th>
             <th (click)="openForEdit(item.OrderId)">{{item.Customer}}</th>
             <th (click)="openForEdit(item.OrderId)">{{item.PaymentMethod}}</th>
