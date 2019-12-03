@@ -15,8 +15,8 @@
         </th>
     </thead>
     <tbody>
-        <tr *ngFor="let item of productItems">
-            <th (click)="openForEdit(item.OrderId)">{{item.Id}}</th>
+        <tr *ngFor="let item of products">
+            <th (click)="openForEdit(item.OrderId)">{{item.ItemId}}</th>
             <th (click)="openForEdit(item.OrderId)">{{item.Name}}</th>
             <th (click)="openForEdit(item.OrderId)">{{item.Price}}</th>
             <th>
