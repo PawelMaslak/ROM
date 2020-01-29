@@ -10,7 +10,7 @@ Restaurant's Order Managment -An application made with Angular8 and ASP.NET Core
 
 Change the Server name if needed.
 
-3. Type in "Package Manager Console": "Update Database".
+3. Type in Visual Studio in "Package Manager Console": "Update Database".
 4. Open ROM project and type in terminal "npm install"
 5. Once all is installed, type in the terminal "ng serve"
 6. App will run on http://localhost:4200/
